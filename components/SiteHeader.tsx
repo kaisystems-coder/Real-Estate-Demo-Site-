@@ -103,7 +103,10 @@ export default function SiteHeader() {
           : 'border-bone-edge bg-bone/90 backdrop-blur-md')
       }
     >
-      <div className="mx-auto flex h-[4.5rem] max-w-[82rem] items-center justify-between gap-4 px-4 sm:px-8">
+      {/* Tighter gutter and gap below xs. At 320px the wordmark and the action
+          cluster together exceeded the row, and both are shrink-0, so the menu
+          button was pushed past the right edge. */}
+      <div className="mx-auto flex h-[4.5rem] max-w-[82rem] items-center justify-between gap-2 px-3 xs:gap-4 xs:px-4 sm:px-8">
         <Link
           href="/"
           aria-label={

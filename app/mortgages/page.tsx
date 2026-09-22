@@ -56,7 +56,13 @@ export default function MortgagesPage() {
       <section className="border-t border-bone-edge bg-bone-deep/40">
         <div className="mx-auto max-w-[82rem] px-5 py-14 sm:px-8 sm:py-16">
           <div className="grid gap-10 lg:grid-cols-[1.1fr_1fr] lg:gap-16">
-            <div>
+            {/* min-w-0 is load-bearing: the rates table below sets a 30rem
+                min-width so its columns stay readable, and a grid child
+                defaults to min-width:auto — so without this the 480px table
+                stretched this whole column to 500px on a 320px phone and
+                dragged the headings and copy off the right edge with it.
+                The table still scrolls on its own inside its wrapper. */}
+            <div className="min-w-0">
               <h2 className="font-display text-[1.7rem] tracking-display text-ink sm:text-[2rem]">
                 Stamp duty, band by band
               </h2>

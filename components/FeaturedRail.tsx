@@ -44,7 +44,12 @@ export default function FeaturedRail({ listings }: { listings: Listing[] }) {
       <motion.div
         {...reveal}
         variants={staggerChildren(0.1)}
-        className="hide-scrollbar -mx-5 mt-8 flex snap-x snap-mandatory gap-4 overflow-x-auto px-5 pb-2 sm:-mx-8 sm:gap-6 sm:px-8 lg:mx-0 lg:grid lg:grid-cols-3 lg:overflow-visible lg:px-0"
+        // `scroll-p*` rather than plain padding: a horizontal scroll container
+        // consumes its own inline padding as scroll offset, so `px-5` alone
+        // left the first card flush against the screen edge and its spec
+        // ledger bleeding off both sides at 320px. Scroll padding keeps the
+        // snap position inset instead, and the cards carry the real gutter.
+        className="hide-scrollbar -mx-5 mt-8 flex snap-x snap-mandatory scroll-px-5 gap-4 overflow-x-auto px-5 pb-2 sm:-mx-8 sm:scroll-px-8 sm:gap-6 sm:px-8 lg:mx-0 lg:grid lg:grid-cols-3 lg:overflow-visible lg:px-0 lg:scroll-px-0"
       >
         {listings.map((listing, i) => {
           const specs = specLedger(listing).slice(0, 3);
@@ -52,7 +57,12 @@ export default function FeaturedRail({ listings }: { listings: Listing[] }) {
             <motion.article
               key={listing.id}
               variants={revealUp}
-              className="group w-[min(88vw,34rem)] shrink-0 snap-start lg:w-auto lg:shrink"
+              // Width is measured off the gutter rather than a flat vw, so the
+              // card can never exceed the space between the rail's insets. The
+              // 3rem it gives back is the peek that shows a second card is
+              // there; a flat 88vw overflowed the container at 320px and left
+              // the neighbour's ledger crowding the screen edge.
+              className="group w-[min(calc(100vw-2.5rem-3rem),34rem)] shrink-0 snap-start lg:w-auto lg:shrink"
             >
               <Link href={'/listings/' + listing.slug} className="block">
                 {/* 16:10 suits the wide plate in the rail; at three-up that

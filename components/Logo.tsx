@@ -45,7 +45,10 @@ export default function Logo({ tone = 'ink' }: { tone?: 'ink' | 'bone' }) {
         {BRAND.name}
         <span
           className={
-            'pl-[0.32rem] font-sans text-[0.7rem] font-normal uppercase tracking-[0.18em] sm:text-[0.62rem] sm:tracking-[0.22em] ' +
+            // Tighter below xs: at 320px "PROPERTIES · DEMO" at 0.7rem/0.18em
+            // made the wordmark 213px wide, which together with the action
+            // cluster pushed the menu button off the right edge.
+            'pl-[0.32rem] font-sans text-[0.58rem] font-normal uppercase tracking-[0.1em] xs:text-[0.7rem] xs:tracking-[0.18em] sm:text-[0.62rem] sm:tracking-[0.22em] ' +
             (tone === 'bone' ? 'text-bone/60' : 'text-ink-mute')
           }
         >

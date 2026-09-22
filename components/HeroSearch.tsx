@@ -358,7 +358,12 @@ export default function HeroSearch({ count }: { count: number }) {
             as="div"
             className={bedMax > 0 || bathMax > 0 ? 'sm:flex-none' : 'hidden'}
           >
-            <div className="flex items-center gap-1 pt-0.5">
+            {/* Two steppers need ~290px side by side, which a 320px screen
+                cannot give once the cell's own gutters are taken out — the
+                bathrooms "+" used to land 27px past the right edge. They wrap
+                to their own lines there and sit in a row again from xs up,
+                where there is room. */}
+            <div className="flex flex-col gap-1 pt-0.5 xs:flex-row xs:items-center">
               <Stepper
                 label="bedrooms"
                 short="bd"
@@ -366,7 +371,10 @@ export default function HeroSearch({ count }: { count: number }) {
                 max={bedMax}
                 onChange={setBeds}
               />
-              <span aria-hidden className="h-5 w-px shrink-0 bg-bone/15" />
+              <span
+                aria-hidden
+                className="hidden h-5 w-px shrink-0 bg-bone/15 xs:block"
+              />
               <Stepper
                 label="bathrooms"
                 short="ba"
@@ -395,7 +403,9 @@ export default function HeroSearch({ count }: { count: number }) {
           />
           <button
             type="submit"
-            className="m-1.5 flex min-h-12 shrink-0 items-center gap-2 rounded-[2px] bg-gold px-6 text-[0.85rem] tracking-wide text-ink transition-[background-color,transform] duration-200 ease-out hover:bg-bone focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-bone active:translate-y-px"
+            // px-6 plus the magnifier and gaps left no room for the input at
+            // 320px — the label clipped to "Sea". Narrower padding below xs.
+            className="m-1.5 flex min-h-12 shrink-0 items-center gap-2 rounded-[2px] bg-gold px-3.5 text-[0.85rem] tracking-wide text-ink transition-[background-color,transform] duration-200 ease-out hover:bg-bone focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-bone active:translate-y-px xs:px-6"
           >
             Search
           </button>
