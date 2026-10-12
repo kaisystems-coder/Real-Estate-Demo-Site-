@@ -17,25 +17,88 @@ import { BRAND } from '@/components/Logo';
 /**
  * The canonical origin, no trailing slash.
  *
- * Falls back to localhost so `next build` produces valid absolute URLs in
- * development. Set NEXT_PUBLIC_SITE_URL on the host before any real deploy —
- * canonicals and OG images pointing at localhost are worse than none.
+ * NEXT_PUBLIC_SITE_URL wins when it is set. Otherwise, on Vercel, the
+ * project's production domain (which becomes the custom domain once one is
+ * attached), then the deployment's own URL. Without those fallbacks every
+ * canonical and og:url on the live site pointed at localhost unless someone
+ * remembered to set the variable. Localhost is the last resort, for local
+ * builds only. Every consumer of this module is a server component, so the
+ * non-public Vercel variables are readable here.
  */
-export const SITE_URL = (
-  process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:5300'
-).replace(/\/$/, '');
+function resolveSiteUrl(): string {
+  if (process.env.NEXT_PUBLIC_SITE_URL) return process.env.NEXT_PUBLIC_SITE_URL;
+  if (process.env.VERCEL_PROJECT_PRODUCTION_URL) {
+    return 'https://' + process.env.VERCEL_PROJECT_PRODUCTION_URL;
+  }
+  if (process.env.VERCEL_URL) return 'https://' + process.env.VERCEL_URL;
+  return 'http://localhost:5300';
+}
+
+export const SITE_URL = resolveSiteUrl().replace(/\/$/, '');
 
 export const SITE_NAME = BRAND.name + ' ' + BRAND.suffix;
 
+/** The shape WhatsApp, iMessage and Facebook render as a large preview card. */
+export const SHARE_W = 1200;
+export const SHARE_H = 630;
+
 /**
- * The default share image.
+ * Rewrites an Unsplash or Pexels photo URL into one that link previews render
+ * sharply.
+ *
+ * Both CDNs negotiate format from the Accept header, so the `auto=format` /
+ * `auto=compress` URLs used on the site were served to WhatsApp's crawler as
+ * AVIF — which it handles badly, falling back to a small low-resolution
+ * thumbnail stretched across the card. That, plus quality 74, was the blurry
+ * preview. Forcing `fm=jpg` returns a plain JPEG to every client, cropped to
+ * the exact 1200x630 the card displays (so nothing is rescaled twice), and
+ * the quality is chosen to stay under the ~300KB WhatsApp will reliably
+ * fetch: measured at 152KB from Unsplash and 286KB from Pexels.
+ *
+ * Any other URL is returned untouched.
+ */
+export function shareImage(src: string, opts: { faces?: boolean } = {}): string {
+  let u: URL;
+  try {
+    u = new URL(src);
+  } catch {
+    return src;
+  }
+  if (u.hostname === 'images.unsplash.com') {
+    u.search = '';
+    u.searchParams.set('fm', 'jpg');
+    u.searchParams.set('fit', 'crop');
+    if (opts.faces) u.searchParams.set('crop', 'faces');
+    u.searchParams.set('w', String(SHARE_W));
+    u.searchParams.set('h', String(SHARE_H));
+    u.searchParams.set('q', '85');
+  } else if (u.hostname === 'images.pexels.com') {
+    u.search = '';
+    u.searchParams.set('cs', 'tinysrgb');
+    u.searchParams.set('fm', 'jpg');
+    u.searchParams.set('fit', 'crop');
+    u.searchParams.set('w', String(SHARE_W));
+    u.searchParams.set('h', String(SHARE_H));
+    u.searchParams.set('q', '80');
+  }
+  return u.toString();
+}
+
+/**
+ * The default share image — the hero photograph.
  *
  * A page that declares its own `openGraph` block replaces the parent's
  * entirely — Next does not merge the two — so every such page has to restate
  * an image or it shares as a blank card.
  */
-export const DEFAULT_OG_IMAGE =
-  'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1200&h=630&q=74';
+export const DEFAULT_OG_IMAGE = shareImage(
+  'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9',
+);
+
+/** OpenGraph image entry with the dimensions and type crawlers want stated. */
+export function ogImage(url: string, alt: string) {
+  return { url, width: SHARE_W, height: SHARE_H, type: 'image/jpeg', alt };
+}
 
 /** Absolute URL for a site-relative path. */
 export function abs(path: string): string {

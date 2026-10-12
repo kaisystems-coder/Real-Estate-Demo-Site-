@@ -8,6 +8,8 @@ import {
   breadcrumbSchema,
   jsonLd,
   listingSchema,
+  ogImage,
+  shareImage,
   SITE_NAME,
 } from '@/lib/seo';
 
@@ -56,19 +58,18 @@ export async function generateMetadata({
       url: abs(path),
       siteName: SITE_NAME,
       locale: 'en_TT',
-      // The property photograph is the whole reason a shared link gets tapped.
-      images: listing.images.slice(0, 1).map((url) => ({
-        url,
-        width: 1200,
-        height: 900,
-        alt: listing.title + ', ' + listing.location,
-      })),
+      // The property photograph is the whole reason a shared link gets tapped,
+      // so it goes through shareImage: a plain JPEG at exactly the card size,
+      // not the AVIF the site's own image URLs negotiate to.
+      images: listing.images
+        .slice(0, 1)
+        .map((url) => ogImage(shareImage(url), listing.title + ', ' + listing.location)),
     },
     twitter: {
       card: 'summary_large_image',
       title: listing.title + ' · ' + formatPrice(listing),
       description,
-      images: listing.images.slice(0, 1),
+      images: listing.images.slice(0, 1).map((url) => shareImage(url)),
     },
   };
 }

@@ -5,7 +5,15 @@ import { notFound } from 'next/navigation';
 import { getAgentBySlug, getAgents } from '@/lib/agents';
 import { BLUR_DATA_URL } from '@/lib/format';
 import AgentEnquiry from '@/components/AgentEnquiry';
-import { abs, agentSchema, breadcrumbSchema, jsonLd, SITE_NAME } from '@/lib/seo';
+import {
+  abs,
+  agentSchema,
+  breadcrumbSchema,
+  jsonLd,
+  ogImage,
+  shareImage,
+  SITE_NAME,
+} from '@/lib/seo';
 
 export function generateStaticParams() {
   return getAgents().map((agent) => ({ slug: agent.slug }));
@@ -40,13 +48,14 @@ export async function generateMetadata({
       url: abs(path),
       siteName: SITE_NAME,
       locale: 'en_TT',
-      images: [{ url: agent.image, width: 800, height: 800, alt: agent.name }],
+      // Cropped on the face so the wide card does not cut the head off.
+      images: [ogImage(shareImage(agent.image, { faces: true }), agent.name)],
     },
     twitter: {
       card: 'summary_large_image',
       title: agent.name + ' · ' + agent.role,
       description,
-      images: [agent.image],
+      images: [shareImage(agent.image, { faces: true })],
     },
   };
 }

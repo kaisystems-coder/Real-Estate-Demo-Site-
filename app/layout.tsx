@@ -4,7 +4,14 @@ import './globals.css';
 import SiteHeader from '@/components/SiteHeader';
 import SiteFooter from '@/components/SiteFooter';
 import WhatsAppButton from '@/components/WhatsAppButton';
-import { jsonLd, organisationSchema, SITE_NAME, SITE_URL } from '@/lib/seo';
+import {
+  DEFAULT_OG_IMAGE,
+  jsonLd,
+  ogImage,
+  organisationSchema,
+  SITE_NAME,
+  SITE_URL,
+} from '@/lib/seo';
 
 /**
  * Display face: Playfair Display. Fraunces' soft/wonk axes read as editorial
@@ -53,22 +60,13 @@ export const metadata: Metadata = {
     description: DESCRIPTION,
     // The hero photograph. Without an og:image a link shared on WhatsApp
     // renders as a bare grey row and loses the tap.
-    images: [
-      {
-        url: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1200&h=630&q=74',
-        width: 1200,
-        height: 630,
-        alt: SITE_NAME + ' — property across Trinidad & Tobago',
-      },
-    ],
+    images: [ogImage(DEFAULT_OG_IMAGE, SITE_NAME + ' — property across Trinidad & Tobago')],
   },
   twitter: {
     card: 'summary_large_image',
     title: SITE_NAME + ' — Trinidad & Tobago',
     description: DESCRIPTION,
-    images: [
-      'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1200&h=630&q=74',
-    ],
+    images: [DEFAULT_OG_IMAGE],
   },
   robots: {
     index: true,

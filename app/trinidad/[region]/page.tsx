@@ -11,6 +11,8 @@ import {
   breadcrumbSchema,
   itemListSchema,
   jsonLd,
+  ogImage,
+  shareImage,
   SITE_NAME,
 } from '@/lib/seo';
 import PageHeader from '@/components/PageHeader';
@@ -79,14 +81,14 @@ export async function generateMetadata({
       locale: 'en_TT',
       type: 'website',
       ...(hero
-        ? { images: [{ url: hero, width: 1200, height: 900, alt: 'Property in ' + region }] }
+        ? { images: [ogImage(shareImage(hero), 'Property in ' + region)] }
         : {}),
     },
     twitter: {
       card: 'summary_large_image',
       title: title + ' · ' + SITE_NAME,
       description,
-      ...(hero ? { images: [hero] } : {}),
+      ...(hero ? { images: [shareImage(hero)] } : {}),
     },
   };
 }

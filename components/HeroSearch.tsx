@@ -291,7 +291,7 @@ export default function HeroSearch({ count }: { count: number }) {
 
       {/* The sheet. Cells stack on a phone and rule up into a row from sm,
           where the hairlines between them do the work a border would. */}
-      <div className="rounded-sm rounded-tl-none border border-bone/20 bg-ink/45 backdrop-blur-md transition-colors duration-300 ease-out focus-within:border-gold/70">
+      <div className="rounded-sm rounded-tl-none border border-bone/20 bg-ink/70 backdrop-blur-md transition-colors duration-300 ease-out focus-within:border-gold/70">
         <div className="flex flex-col divide-y divide-bone/15 sm:flex-row sm:items-stretch sm:divide-x sm:divide-y-0">
           <Cell label="Where" className="sm:flex-[1.3]">
             <select
@@ -399,7 +399,7 @@ export default function HeroSearch({ count }: { count: number }) {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Or search by name — Maraval, Bayshore&hellip;"
-            className="min-w-0 flex-1 bg-transparent py-3.5 text-[16px] text-bone outline-none placeholder:text-bone/45 sm:py-4 desk:text-[0.95rem]"
+            className="min-w-0 flex-1 bg-transparent py-3.5 text-[16px] text-bone outline-none placeholder:text-bone/60 sm:py-4 desk:text-[0.95rem]"
           />
           <button
             type="submit"
@@ -437,14 +437,14 @@ export default function HeroSearch({ count }: { count: number }) {
               <path d={q.path} />
             </svg>
             {q.label}
-            <span className="tnum text-bone/40 transition-colors duration-200 ease-out group-hover:text-gold">
+            <span className="tnum text-bone/60 transition-colors duration-200 ease-out group-hover:text-gold">
               {quickCount(q)}
             </span>
           </Link>
         ))}
       </div>
 
-      <p className="tnum mt-4 text-[0.8rem] text-bone/45">
+      <p className="tnum mt-4 text-[0.8rem] text-bone/65">
         {count} listings on the books today ·{' '}
         <Link
           href="/mortgages"
@@ -537,8 +537,8 @@ function Stepper({
       >
         {value === 0 ? (
           <>
-            <span className="text-bone/55">Any</span>{' '}
-            <span className="text-bone/40">{short}</span>
+            <span className="text-bone/70">Any</span>{' '}
+            <span className="text-bone/60">{short}</span>
           </>
         ) : (
           <span className="text-bone">{value + '+ ' + short}</span>
